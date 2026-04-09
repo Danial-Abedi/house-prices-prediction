@@ -56,4 +56,38 @@ ggplot(train_data, aes(Log_SalePrice))+
     y="Number of Houses"
   )
 ```
+```{r}
+#Cleaning Data 
+train_data <- train_data %>%
+  mutate(
+    #here NA means the house doesn't have the mentioned facility
+    PoolQC = ifelse(is.na(PoolQC), "None",PoolQC),
+    MiscFeature=ifelse(is.na(MiscFeature),"None",MiscFeature),
+    Alley=ifelse(is.na(Alley),"None",Alley),
+    Fence=ifelse(is.na(Fence),"None", Fence),
+    FireplaceQu=ifelse(is.na(FireplaceQu),"None",FireplaceQu),
+    #using median to fill the following column
+    LotFrontage=ifelse(is.na(LotFrontage),median(LotFrontage,na.rm = TRUE), LotFrontage)
+  )
+#test for NA(it is 0)
+
+# print("Number of NA for PoolQC column after fixing")
+# sum(is.na(train_data$PoolQC))
+```
+```{r}
+
+#plotting the relationship between living area and house price
+ggplot(train_data, aes(x=GrLivArea, y=Log_SalePrice))+
+  geom_point(color = "darkblue",alpha=0.5)+
+  #Add a straight trend line to show the overall direction
+  # method = "lm" stands for Linear Model
+  geom_smooth(method = "lm",color="red",se = FALSE)+
+  theme_minimal()+
+  labs(
+    title = "Living Area vs. Log Sale Price",
+    subtitle = "Notice the positive correlation: Bigger area = Higher price",
+    x = "Above Ground Living Area (Square Feet)",
+    y = "Logarithm of Sale Price"
+  )
+```
 
