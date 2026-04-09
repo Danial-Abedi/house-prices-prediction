@@ -4,3 +4,56 @@ author: "DANIAL ABEDI"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+```{r}
+#installing packeges
+#install.packages(c("ggplot2","dplyr","scales"))
+```
+
+
+
+
+```{r}
+#loading packages
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+```
+
+```{r}
+#loading data
+train_data <- read.csv("F:/Projects GitHub/house-prices-prediction/data/train.csv")
+dim(train_data)
+```
+```{r}
+#visualizing target variable(SalesPrice)
+
+ggplot(train_data,aes(x=SalePrice )) +
+  geom_histogram(fill= "steelblue",color = "white",bins=75) +
+  theme_minimal() +
+  labs(
+    title = "Distribution of House Price in Ames",
+    substitle = "Most houses are clustered around $100k - $200k ",
+    x = "Sales Price",
+    Y = "Number of Houses"
+  ) +
+  scale_x_continuous(
+    breaks = c(100000,200000,400000,600000,800000),
+    labels = comma)
+```
+```{r}
+#Creating new column with the logarithmic transformation of SalePrice
+
+train_data <- train_data %>%
+  mutate(Log_SalePrice=log(SalePrice))
+ggplot(train_data, aes(Log_SalePrice))+
+  geom_histogram(fill="seagreen",color="white",bins = 75)+
+  theme_minimal() +
+  labs(
+    title = " Log-Transformed Distribution of House Price" ,
+    subtitle = " Using logarithm so that machine understand it better",
+    x="Log(SalePrice)",
+    y="Number of Houses"
+  )
+```
+
