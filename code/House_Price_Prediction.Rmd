@@ -74,6 +74,8 @@ train_data <- train_data %>%
 # print("Number of NA for PoolQC column after fixing")
 # sum(is.na(train_data$PoolQC))
 ```
+
+
 ```{r}
 
 #plotting the relationship between living area and house price
@@ -89,5 +91,42 @@ ggplot(train_data, aes(x=GrLivArea, y=Log_SalePrice))+
     x = "Above Ground Living Area (Square Feet)",
     y = "Logarithm of Sale Price"
   )
+```
+
+
+```{r}
+#Removing outliers(very large, very cheap)
+train_data<-train_data %>%
+  filter(!(GrLivArea>4000 & Log_SalePrice<12.5))
+
+ggplot(train_data,aes(x=GrLivArea,y=Log_SalePrice))+
+  geom_point(color="darkblue",alpha=0.5)+
+  geom_smooth(method = "lm",color = "red", se= FALSE)+
+  theme_minimal()+
+  labs(
+    title = "Living Area vs. Log Sale Price (Outliers Removed)",
+    subtitle = "The trend line is now much more accurate!",
+    x = "Above Ground Living Area (Square Feet)",
+    y = "Logarithm of Sale Price"
+  )
+```
+```{r}
+#اHouse price vs overall quality
+ggplot(train_data,aes(x= factor(OverallQual), y= Log_SalePrice,fill =factor(OverallQual)))+
+  geom_boxplot(alpha=0.5)+
+  theme_minimal()+
+  theme(legend.position = "none")+   # Hide the color legend since the X-axis already shows the numbers
+  labs(
+    title = "Effect of Overall Quality on House Price",
+    subtitle = "staircase effect",
+    x = "Overall Quality Score (1 = Poor, 10 = Excellent)",
+    y = "Logarithm of Sale Price"
+  )
+  
+  
+
+```
+```{r}
+
 ```
 
