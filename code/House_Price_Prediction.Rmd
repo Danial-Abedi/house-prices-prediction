@@ -127,6 +127,18 @@ ggplot(train_data,aes(x= factor(OverallQual), y= Log_SalePrice,fill =factor(Over
 
 ```
 ```{r}
+#finding 10 numeric features most correlated with Sale Price
+#Select ONLY the columns that contain numbers
 
+numeric_data<-train_data %>%
+  select(where(is.numeric))
+correlations<- cor(numeric_data,use = "complete.obs")[,"Log_SalePrice"]
+cor_table<-data.frame(
+  Feature= names(correlations),
+  Correlation = as.numeric(correlations)
+)%>%
+  arrange(desc(Correlation))
+
+head(cor_table,10)
 ```
 
