@@ -141,4 +141,15 @@ cor_table<-data.frame(
 
 head(cor_table,10)
 ```
+```{r}
+#feature engineering
+train_data<- train_data %>%
+  mutate(
+    TotalArea = TotalBsmtSF +X1stFlrSF+X2ndFlrSF,
+    HouseAge = YrSold - YearBuilt,
+    TotalBath = FullBath +(0.5 * HalfBath) + BsmtFullBath +(0.5 * BsmtHalfBath)
+  )
+#checking correlation between total area and sales price
+cor(train_data$TotalArea, train_data$Log_SalePrice, use = "complete.obs")
+```
 
