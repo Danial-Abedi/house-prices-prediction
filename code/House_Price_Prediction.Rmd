@@ -4,13 +4,11 @@ author: "DANIAL ABEDI"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+
 ```{r}
 #installing packeges
 #install.packages(c("ggplot2","dplyr","scales"))
 ```
-
-
-
 
 ```{r}
 #loading packages
@@ -25,6 +23,7 @@ library(scales)
 train_data <- read.csv("F:/Projects GitHub/house-prices-prediction/data/train.csv")
 dim(train_data)
 ```
+
 ```{r}
 #visualizing target variable(SalesPrice)
 
@@ -41,6 +40,7 @@ ggplot(train_data,aes(x=SalePrice )) +
     breaks = c(100000,200000,400000,600000,800000),
     labels = comma)
 ```
+
 ```{r}
 #Creating new column with the logarithmic transformation of SalePrice
 
@@ -56,6 +56,7 @@ ggplot(train_data, aes(Log_SalePrice))+
     y="Number of Houses"
   )
 ```
+
 ```{r}
 #Cleaning Data 
 train_data <- train_data %>%
@@ -75,7 +76,6 @@ train_data <- train_data %>%
 # sum(is.na(train_data$PoolQC))
 ```
 
-
 ```{r}
 
 #plotting the relationship between living area and house price
@@ -93,7 +93,6 @@ ggplot(train_data, aes(x=GrLivArea, y=Log_SalePrice))+
   )
 ```
 
-
 ```{r}
 #Removing outliers(very large, very cheap)
 train_data<-train_data %>%
@@ -110,6 +109,7 @@ ggplot(train_data,aes(x=GrLivArea,y=Log_SalePrice))+
     y = "Logarithm of Sale Price"
   )
 ```
+
 ```{r}
 #اHouse price vs overall quality
 ggplot(train_data,aes(x= factor(OverallQual), y= Log_SalePrice,fill =factor(OverallQual)))+
@@ -126,6 +126,7 @@ ggplot(train_data,aes(x= factor(OverallQual), y= Log_SalePrice,fill =factor(Over
   
 
 ```
+
 ```{r}
 #finding 10 numeric features most correlated with Sale Price
 #Select ONLY the columns that contain numbers
@@ -141,6 +142,7 @@ cor_table<-data.frame(
 
 head(cor_table,10)
 ```
+
 ```{r}
 #feature engineering
 train_data<- train_data %>%
@@ -152,11 +154,11 @@ train_data<- train_data %>%
 #checking correlation between total area and sales price
 cor(train_data$TotalArea, train_data$Log_SalePrice, use = "complete.obs")
 ```
+
 ```{r}
 model_data<-train_data %>%
   select(Log_SalePrice,OverallQual,TotalArea,GarageCars,HouseAge,TotalBath)%>%
   na.omit() #remove N/A
-first_model <- lm(Log_SalePrice  ~.,data = model_data)
+first_model <- lm( Log_SalePrice  ~.,data = model_data)
 summary(first_model)#AI report
 ```
-
