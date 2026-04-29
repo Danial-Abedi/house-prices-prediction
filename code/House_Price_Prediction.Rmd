@@ -149,7 +149,7 @@ train_data<- train_data %>%
   mutate(
     TotalArea = TotalBsmtSF +X1stFlrSF+X2ndFlrSF,
     HouseAge = YrSold - YearBuilt,
-    TotalBath = FullBath +(0.5 * HalfBath) + BsmtFullBath +(0.5 * BsmtHalfBath)
+    TotalBaths = FullBath +(0.5 * HalfBath) + BsmtFullBath +(0.5 * BsmtHalfBath)
   )
 #checking correlation between total area and sales price
 cor(train_data$TotalArea, train_data$Log_SalePrice, use = "complete.obs")
@@ -157,8 +157,50 @@ cor(train_data$TotalArea, train_data$Log_SalePrice, use = "complete.obs")
 
 ```{r}
 model_data<-train_data %>%
-  select(Log_SalePrice,OverallQual,TotalArea,GarageCars,HouseAge,TotalBath)%>%
+  select(Log_SalePrice,OverallQual,TotalArea,GarageCars,HouseAge,TotalBaths)%>%
   na.omit() #remove N/A
+```
+
+
+
+
+```{r}
 first_model <- lm( Log_SalePrice  ~.,data = model_data)
 summary(first_model)#AI report
 ```
+
+
+
+```{r}
+#Loading the test data
+test_data <- read.csv("F:/Projects GitHub/house-prices-prediction/data/test.csv")
+#Apply the SAME Feature Engineering to test_data
+test_data <- test_data %>%
+  mutate(
+    # Creating our features again
+    TotalArea = TotalBsmtSF + X1stFlrSF + X2ndFlrSF,
+    HouseAge = YrSold - YearBuilt,
+    TotalBaths = FullBath + (0.5 * HalfBath) + BsmtFullBath + (0.5 * BsmtHalfBath),
+    
+    # We must fill any NAs in our 5 features so the predict() function doesn't crash
+    TotalArea = ifelse(is.na(TotalArea), median(TotalArea, na.rm = TRUE), TotalArea),
+    GarageCars = ifelse(is.na(GarageCars), 0, GarageCars),
+    # NA garage usually means no garage
+    TotalBaths = ifelse(is.na(TotalBaths), median(TotalBaths, na.rm = TRUE), TotalBaths)
+  )
+
+log_predictions <- predict(first_model, newdata = test_data)
+real_prices <- exp(log_predictions)
+
+#Create the final submission dataframe
+submission <- data.frame(
+  Id = test_data$Id,
+  SalePrice = real_prices
+)
+
+#Save
+write.csv(submission, "F:/Projects GitHub/house-prices-prediction/my_first_submission.csv", row.names = FALSE)
+
+print("Submission file is ready")
+```
+
